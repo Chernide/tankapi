@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History: Tankbook</title>
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea; --warn:#8a5a00; --field:#f6fafa; --err:#b3261e;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f; --warn:#e0b04a; --field:#0f1f1f; --err:#ff8a80;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover,nav a.link[aria-current]{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:32px}
+h1{font-size:clamp(1.8rem,5vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:24px 0 8px}
+.lead{color:var(--mute);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chips a{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 14px;
+  color:var(--ink);text-decoration:none;font-size:.9rem}
+.chips a:hover{border-color:var(--accent)}
+main{padding:28px 0 48px}
+#page-status{margin:0 0 16px;font-weight:600;min-height:1.4em;color:var(--err)}
+.tank{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:24px;scroll-margin-top:12px}
+.tank > h2{margin:0;font-size:1.4rem;letter-spacing:-.01em}
+.tank .sub{color:var(--mute);font-size:.9rem;margin:2px 0 4px}
+h3{font-size:1.02rem;margin:20px 0 8px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th{background:var(--bg);color:var(--mute);font-weight:600}
+td.num{font-variant-numeric:tabular-nums}
+td.wrapcell{white-space:normal;min-width:160px}
+td.actions{text-align:right}
+.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 8px;font-size:.78rem;color:var(--mute)}
+.badge.warn{color:var(--warn);border-color:var(--warn)}
+.none{color:var(--mute);font-style:italic;margin:0}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:32px;text-align:center;color:var(--mute)}
+.btn,button{font:inherit;cursor:pointer}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:10px 20px;
+  border-radius:8px;text-decoration:none;font-weight:600;margin-top:12px;border:0}
+.mini{background:none;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:2px 10px;font-size:.82rem}
+.mini:hover{border-color:var(--accent)}
+.mini.del{color:var(--err)}
+.mini.del:hover{border-color:var(--err)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);padding:0;width:min(520px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog form{padding:20px}
+dialog h2{margin:0 0 14px;font-size:1.2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+dialog label{display:flex;flex-direction:column;font-size:.88rem;color:var(--mute);gap:4px;margin-bottom:12px}
+dialog input,dialog select,dialog textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%}
+dialog textarea{resize:vertical;min-height:70px}
+dialog label.check{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+dialog label.check input{width:18px;height:18px;accent-color:var(--accent)}
+.dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.dlg-actions .save{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:10px 20px;font-weight:600}
+.dlg-actions .cancel{background:none;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 20px}
+.dlg-status{color:var(--err);font-weight:600;min-height:1.4em;margin:0 0 6px}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+{% macro v(x) %}{{ '–' if x is none or x == '' else x }}{% endmacro %}
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/tanks">Tanks</a>
+        <a class="link" href="/history" aria-current="page">History</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>History</h1>
+    <p class="lead">Every water test and event, grouped by tank, newest first. Edit or delete any row.</p>
+    {% if tanks and tanks|length > 1 %}
+    <div class="chips">
+      {% for tank in tanks %}<a href="#tank-{{ tank['id'] }}">{{ tank['name'] }}</a>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</header>
+
+<main class="wrap">
+  <p id="page-status" role="alert"></p>
+  {% if tanks %}
+    {% for tank in tanks %}
+    {% set tank_logs = logs|selectattr('tank_id', 'equalto', tank['id'])|list %}
+    {% set tank_events = events|selectattr('tank_id', 'equalto', tank['id'])|list %}
+    <section class="tank" id="tank-{{ tank['id'] }}">
+      <h2>{{ tank['name'] }}</h2>
+      <p class="sub">{{ tank_logs|length }} test{{ '' if tank_logs|length == 1 else 's' }} &middot; {{ tank_events|length }} event{{ '' if tank_events|length == 1 else 's' }}</p>
+
+      <h3>Water tests</h3>
+      {% if tank_logs %}
+      <div class="scroll"><table>
+        <thead><tr>
+          <th>Date</th><th>Ammonia</th><th>Nitrite</th><th>Nitrate</th>
+          <th>Alkalinity</th><th>pH</th><th>Temperature</th><th>Note</th><th></th>
+        </tr></thead>
+        <tbody>
+        {% for r in tank_logs %}
+        <tr data-kind="test" data-id="{{ r['id'] }}"
+            data-created="{{ r['created_at'] or '' }}"
+            data-ammonia="{{ '' if r['ammonia'] is none else r['ammonia'] }}"
+            data-nitrite="{{ '' if r['nitrite'] is none else r['nitrite'] }}"
+            data-nitrate="{{ '' if r['nitrate'] is none else r['nitrate'] }}"
+            data-alkalinity="{{ '' if r['alkalinity'] is none else r['alkalinity'] }}"
+            data-ph="{{ '' if r['ph'] is none else r['ph'] }}"
+            data-temperature="{{ '' if r['temperature'] is none else r['temperature'] }}"
+            data-shaky="{{ 1 if r['shaky'] else 0 }}"
+            data-note="{{ r['note'] or '' }}">
+          <td>{{ (r['created_at'] or '')[:16]|replace('T', ' ') }}</td>
+          <td class="num">{{ v(r['ammonia']) }}</td>
+          <td class="num">{{ v(r['nitrite']) }}</td>
+          <td class="num">{{ v(r['nitrate']) }}</td>
+          <td class="num">{{ v(r['alkalinity']) }}</td>
+          <td class="num">{{ v(r['ph']) }}</td>
+          <td class="num">{{ v(r['temperature']) }}</td>
+          <td class="wrapcell">{% if r['shaky'] %}<span class="badge warn">shaky</span> {% endif %}{{ r['note'] or '' }}</td>
+          <td class="actions">
+            <button type="button" class="mini" data-action="edit">Edit</button>
+            <button type="button" class="mini del" data-action="delete">Delete</button>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}
+      <p class="none">No tests logged for this tank.</p>
+      {% endif %}
+
+      <h3>Events</h3>
+      {% if tank_events %}
+      <div class="scroll"><table>
+        <thead><tr><th>Date</th><th>Type</th><th>Description</th><th></th></tr></thead>
+        <tbody>
+        {% for e in tank_events %}
+        <tr data-kind="event" data-id="{{ e['id'] }}"
+            data-created="{{ e['created_at'] or '' }}"
+            data-type="{{ e['event_type'] or '' }}"
+            data-description="{{ e['description'] or '' }}">
+          <td>{{ (e['created_at'] or '')[:16]|replace('T', ' ') }}</td>
+          <td>{{ (e['event_type'] or '')|replace('_', ' ')|capitalize }}</td>
+          <td class="wrapcell">{{ e['description'] or '' }}</td>
+          <td class="actions">
+            <button type="button" class="mini" data-action="edit">Edit</button>
+            <button type="button" class="mini del" data-action="delete">Delete</button>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}
+      <p class="none">No events logged for this tank.</p>
+      {% endif %}
+    </section>
+    {% endfor %}
+  {% else %}
+  <div class="empty">
+    <p>No tanks yet, so there's no history to show.</p>
+    <a class="btn" href="/add-tank">Add a tank</a>
+  </div>
+  {% endif %}
+</main>
+
+<dialog id="dlg-test" aria-labelledby="dlg-test-title">
+  <form id="form-test">
+    <h2 id="dlg-test-title">Edit water test</h2>
+    <label>Date and time <input type="datetime-local" name="created_at" required></label>
+    <div class="grid">
+      <label>Ammonia (ppm) <input type="number" name="ammonia" step="any" min="0"></label>
+      <label>Nitrite (ppm) <input type="number" name="nitrite" step="any" min="0"></label>
+      <label>Nitrate (ppm) <input type="number" name="nitrate" step="any" min="0"></label>
+      <label>Alkalinity (dKH) <input type="number" name="alkalinity" step="any" min="0"></label>
+      <label>pH <input type="number" name="ph" step="0.1" min="0" max="14"></label>
+      <label>Temperature (&deg;F) <input type="number" name="temperature" step="any"></label>
+    </div>
+    <label class="check"><input type="checkbox" name="shaky"> Shaky reading</label>
+    <label>Note <textarea name="note"></textarea></label>
+    <p class="dlg-status" role="alert"></p>
+    <div class="dlg-actions">
+      <button type="button" class="cancel">Cancel</button>
+      <button type="submit" class="save">Save changes</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-event" aria-labelledby="dlg-event-title">
+  <form id="form-event">
+    <h2 id="dlg-event-title">Edit event</h2>
+    <label>Date and time <input type="datetime-local" name="created_at" required></label>
+    <label>Type
+      <select name="event_type" required>
+        <option value="water_change">Water change</option>
+        <option value="filter_clean">Filter cleaning</option>
+        <option value="dosing">Dosing</option>
+        <option value="livestock">Livestock added or removed</option>
+        <option value="incident">Incident</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <label>Description <textarea name="description"></textarea></label>
+    <p class="dlg-status" role="alert"></p>
+    <div class="dlg-actions">
+      <button type="button" class="cancel">Cancel</button>
+      <button type="submit" class="save">Save changes</button>
+    </div>
+  </form>
+</dialog>
+
+<footer><div class="wrap">Tankbook &middot; a personal project for healthier fish tanks.</div></footer>
+
+<script>
+  var BASE = { test: '/tankdata/', event: '/tankevents/' };
+  var NUMBER_FIELDS = ['ammonia', 'nitrite', 'nitrate', 'alkalinity', 'ph', 'temperature'];
+  var pageStatus = document.getElementById('page-status');
+  var dialogs = { test: document.getElementById('dlg-test'), event: document.getElementById('dlg-event') };
+  var forms = { test: document.getElementById('form-test'), event: document.getElementById('form-event') };
+  var editing = { kind: null, id: null };
+
+  function toLocalInput(s) { return (s || '').replace(' ', 'T').slice(0, 16); }
+  function toStored(s) { return s.replace('T', ' '); }
+  function numOrNull(v) { v = (v || '').trim(); return v === '' ? null : Number(v); }
+
+  function request(method, url, body) {
+    var opts = { method: method, headers: {} };
+    if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    return fetch(url, opts).then(function (res) {
+      if (res.ok) return res;
+      return res.json().catch(function () { return {}; }).then(function (b) {
+        throw new Error(b.error || ('Server returned ' + res.status));
+      });
+    });
+  }
+
+  function openEdit(kind, tr) {
+    var f = forms[kind], d = tr.dataset;
+    editing = { kind: kind, id: d.id };
+    f.created_at.value = toLocalInput(d.created);
+    if (kind === 'test') {
+      NUMBER_FIELDS.forEach(function (n) { f[n].value = d[n]; });
+      f.shaky.checked = d.shaky === '1';
+      f.note.value = d.note;
+    } else {
+      // Keep a stored type that isn't one of the standard options.
+      var has = Array.prototype.some.call(f.event_type.options, function (o) { return o.value === d.type; });
+      if (!has && d.type) {
+        var o = document.createElement('option'); o.value = d.type; o.textContent = d.type; f.event_type.appendChild(o);
+      }
+      f.event_type.value = d.type || 'other';
+      f.description.value = d.description;
+    }
+    dialogs[kind].querySelector('.dlg-status').textContent = '';
+    dialogs[kind].showModal();
+  }
+
+  function confirmDelete(kind, tr) {
+    var when = (tr.dataset.created || '').replace('T', ' ').slice(0, 16);
+    var label = kind === 'test' ? 'water test' : 'event';
+    if (!window.confirm('Delete the ' + label + ' from ' + when + '? This cannot be undone.')) return;
+    pageStatus.textContent = '';
+    request('DELETE', BASE[kind] + tr.dataset.id)
+      .then(function () { window.location.reload(); })
+      .catch(function (err) { pageStatus.textContent = 'Could not delete: ' + err.message; });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    var tr = btn.closest('tr');
+    if (btn.dataset.action === 'edit') openEdit(tr.dataset.kind, tr);
+    else confirmDelete(tr.dataset.kind, tr);
+  });
+
+  ['test', 'event'].forEach(function (kind) {
+    var dlg = dialogs[kind], f = forms[kind];
+    dlg.querySelector('.cancel').addEventListener('click', function () { dlg.close(); });
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var status = dlg.querySelector('.dlg-status'), save = f.querySelector('.save');
+      var payload = { created_at: toStored(f.created_at.value) };
+      if (kind === 'test') {
+        NUMBER_FIELDS.forEach(function (n) { payload[n] = numOrNull(f[n].value); });
+        payload.shaky = f.shaky.checked;
+        payload.note = f.note.value.trim() || null;
+      } else {
+        payload.event_type = f.event_type.value;
+        payload.description = f.description.value.trim() || null;
+      }
+      save.disabled = true; status.textContent = '';
+      request('PUT', BASE[kind] + editing.id, payload)
+        .then(function () { window.location.reload(); })
+        .catch(function (err) { status.textContent = 'Could not save: ' + err.message; save.disabled = false; });
+    });
+  });
+</script>
+</body>
+</html>

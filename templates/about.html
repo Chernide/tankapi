@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About: Tankbook</title>
+<meta name="description" content="Denver Chernin is a software engineer who built Tankbook to keep his freshwater aquarium healthy and hold himself accountable.">
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover,nav a.link[aria-current]{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:56px}
+h1{font-size:clamp(2rem,6vw,3rem);line-height:1.12;letter-spacing:-.02em;margin:32px 0 16px;max-width:16em}
+.lead{font-size:1.15rem;color:var(--mute);max-width:36em;margin:0}
+section{padding:48px 0}
+h2{font-size:1.6rem;letter-spacing:-.01em;margin:0 0 12px}
+p{margin:0 0 14px;max-width:40em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--mute);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.tags li{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.92rem}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:12px 22px;
+  border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/about" aria-current="page">About</a>
+      </div>
+    </nav>
+    <h1>Hi, I'm Denver Chernin.</h1>
+    <p class="lead">I'm a software engineer who loves fish tanks, and I built Tankbook to finally keep mine in good shape.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>My story</h2>
+    <p>I write software for a living, and in my spare time I keep freshwater aquariums. I love them, but I've struggled to maintain a healthy tank consistently. Water tests get skipped, water changes slip a few days, and when something goes wrong I can't remember what changed.</p>
+    <p>I decided to combine my two interests: build a tool that fits the way I actually test and take care of my tank.</p>
+  </section>
+
+  <section>
+    <h2>Why I made Tankbook</h2>
+    <p>Tankbook is a way to keep track of my tank and hold myself accountable. A written record turns "I think it was fine last week" into numbers I can look at, and reminders mean maintenance doesn't depend on my memory.</p>
+    <div class="grid">
+      <div class="card"><h3>Keep track</h3><p>Log my water tests so I can see what's really happening over time.</p></div>
+      <div class="card"><h3>Stay accountable</h3><p>Reminders for tests, water changes and filter cleaning keep me on schedule.</p></div>
+      <div class="card"><h3>Learn from it</h3><p>Notes on dosing, livestock and incidents help me connect cause and effect.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it's built with</h2>
+    <p>Tankbook is a personal project running on a Raspberry Pi on my home network.</p>
+    <ul class="tags">
+      <li>Python</li><li>Flask</li><li>SQLite</li><li>Raspberry Pi</li>
+    </ul>
+    <p style="margin-top:20px"><a class="btn" href="/">Back to Tankbook</a></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Made by Denver Chernin. A personal side project for healthier fish tanks.</div>
+</footer>
+</body>
+</html>

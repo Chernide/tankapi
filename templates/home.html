@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home: Tankbook</title>
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover,nav a.link[aria-current]{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:40px}
+h1{font-size:clamp(1.9rem,5.5vw,2.7rem);line-height:1.12;letter-spacing:-.02em;margin:28px 0 10px}
+.lead{font-size:1.1rem;color:var(--mute);max-width:34em;margin:0}
+section{padding:36px 0}
+h2{font-size:1.2rem;margin:0 0 14px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+a.tile{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+a.tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+a.tile h3{margin:0 0 6px;font-size:1.1rem}
+a.tile p{margin:0;color:var(--mute);font-size:.95rem}
+a.tile .go{display:inline-block;margin-top:12px;color:var(--accent);font-weight:600;font-size:.95rem}
+a.tile.primary{background:var(--accent);border-color:var(--accent)}
+a.tile.primary h3,a.tile.primary p,a.tile.primary .go{color:var(--accent-ink)}
+a.tile.primary p{opacity:.9}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mute);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){a.tile{transition:none}a.tile:hover{transform:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/" aria-current="page">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/landing">What is this?</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>Welcome back.</h1>
+    <p class="lead">What would you like to do with your tank today?</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>Log</h2>
+    <div class="grid">
+      <a class="tile primary" href="/log-test">
+        <h3>Log a water test</h3>
+        <p>Ammonia, nitrite, nitrate, KH, pH and temperature.</p>
+        <span class="go">Start a test &rarr;</span>
+      </a>
+      <a class="tile primary" href="/log-event">
+        <h3>Log an event</h3>
+        <p>Water changes, filter cleaning, dosing, livestock and incidents.</p>
+        <span class="go">Add an event &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Review</h2>
+    <div class="grid">
+      <a class="tile" href="/trends">
+        <h3>Trends &amp; charts</h3>
+        <p>See how your water parameters are changing over time.</p>
+        <span class="go">View charts &rarr;</span>
+      </a>
+      <a class="tile" href="/history">
+        <h3>History</h3>
+        <p>Browse past tests and events, and fix any mistakes.</p>
+        <span class="go">Open history &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>More</h2>
+    <div class="grid">
+      <a class="tile" href="/tanks">
+        <h3>Tanks</h3>
+        <p>View and manage your tanks.</p>
+        <span class="go">View tanks &rarr;</span>
+      </a>
+      <a class="tile" href="/about">
+        <h3>About Tankbook</h3>
+        <p>Why this project exists and who is behind it.</p>
+        <span class="go">Read more &rarr;</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Tankbook &middot; a personal project for healthier fish tanks.</div>
+</footer>
+</body>
+</html>

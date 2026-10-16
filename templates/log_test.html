@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log a water test: Tankbook</title>
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea; --field:#f6fafa;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f; --field:#0f1f1f;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:32px}
+h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15;letter-spacing:-.02em;margin:24px 0 8px}
+.lead{color:var(--mute);margin:0}
+main{padding:28px 0 48px}
+fieldset{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px 20px;margin:0 0 18px}
+legend{font-weight:700;padding:0 8px;font-size:1.05rem}
+.hint{color:var(--mute);font-size:.9rem;margin:0 0 12px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mute);gap:4px}
+label span.unit{font-size:.8rem;opacity:.85}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:80px}
+.check{flex-direction:row;align-items:flex-start;gap:10px;color:var(--ink);font-size:.95rem}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent)}
+.check small{display:block;color:var(--mute)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+button,.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;
+  border-radius:8px;padding:12px 24px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px}
+#status{margin:14px 0 0;font-weight:600;min-height:1.5em}
+#status.ok{color:var(--accent)}
+#status.err{color:#b3261e}
+@media (prefers-color-scheme:dark){ #status.err{color:#ff8a80}}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>Log a water test</h1>
+    <p class="lead">Fill in what you tested. Leave anything you skipped blank.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <form method="post" action="/log-test">
+
+    <fieldset>
+      <legend>Tank</legend>
+      <div class="row">
+        <label for="tank_id">Tank
+          <select name="tank_id" id="tank_id" required>
+            <option value="" selected disabled>Select a tank</option>
+            {% for tank in tanks %}
+            <option value="{{ tank['id'] }}">{{ tank['name'] }}</option>
+            {% else %}
+            <option value="" disabled>No tanks available</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <p class="hint" style="margin:10px 0 0">Choose the tank this test belongs to. <a href="/tanks">Manage tanks</a>.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>When</legend>
+      <div class="row">
+        <label>Date and time
+          <input type="datetime-local" name="ts" id="ts" required>
+        </label>
+        <label>Timing
+          <select name="tag">
+            <option value="">Normal</option>
+            <option value="pre">Before a water change</option>
+            <option value="post">After a water change</option>
+          </select>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Liquid test (API)</legend>
+      <p class="hint">Type the value you read, or pick a common color-chart step.</p>
+      <div class="row">
+        <label>Ammonia <span class="unit">ppm</span>
+          <input type="number" name="nh3" step="any" min="0" inputmode="decimal" list="nh3-steps">
+        </label>
+        <label>Nitrite <span class="unit">ppm</span>
+          <input type="number" name="no2" step="any" min="0" inputmode="decimal" list="no2-steps">
+        </label>
+        <label>Nitrate <span class="unit">ppm</span>
+          <input type="number" name="no3" step="any" min="0" inputmode="decimal" list="no3-steps">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Test strips</legend>
+      <div class="row">
+        <label>KH <span class="unit">dKH</span>
+          <input type="number" name="kh" step="any" min="0" inputmode="decimal">
+        </label>
+        <label>pH
+          <input type="number" name="ph" step="0.1" min="0" max="14" inputmode="decimal">
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Other</legend>
+      <div class="row">
+        <label>Temperature <span class="unit">&deg;F</span>
+          <input type="number" name="temp_f" step="any" inputmode="decimal">
+        </label>
+      </div>
+      <p class="hint" style="margin-top:14px">Temperature and pH improve the toxic ammonia estimate.</p>
+      <label class="check">
+        <input type="checkbox" name="shaky" value="1">
+        <span>Shaky reading
+          <small>Check this if the test might be off, such as a bottle not shaken long enough.</small>
+        </span>
+      </label>
+      <label style="margin-top:14px">Note
+        <textarea name="note" placeholder="Anything worth remembering"></textarea>
+      </label>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit">Save test</button>
+      <a class="btn ghost" href="/">Cancel</a>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+  </form>
+
+  <datalist id="nh3-steps"><option value="0"><option value="0.25"><option value="0.5"><option value="1"><option value="2"><option value="4"><option value="8"></datalist>
+  <datalist id="no2-steps"><option value="0"><option value="0.25"><option value="0.5"><option value="1"><option value="2"><option value="5"></datalist>
+  <datalist id="no3-steps"><option value="0"><option value="5"><option value="10"><option value="20"><option value="40"><option value="80"><option value="160"></datalist>
+</main>
+
+<footer><div class="wrap">Tankbook &middot; a personal project for healthier fish tanks.</div></footer>
+
+<script>
+  var form = document.querySelector('form');
+  var statusEl = document.getElementById('status');
+  var submitBtn = form.querySelector('button[type="submit"]');
+  var NUMBERS = ['nh3', 'no2', 'no3', 'kh', 'ph', 'temp_f'];
+
+  // Default the date and time to now (local time).
+  function setNow() {
+    var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    document.getElementById('ts').value = d.toISOString().slice(0, 16);
+  }
+  setNow();
+
+  function say(msg, cls) { statusEl.textContent = msg; statusEl.className = cls || ''; }
+
+  // Build the JSON payload: blank fields become null, numbers become numbers.
+  function buildPayload() {
+    var f = new FormData(form);
+    var data = {
+      ts: f.get('ts'),
+      tag: f.get('tag') || null,
+      shaky: f.get('shaky') === '1',
+      note: (f.get('note') || '').trim() || null,
+      tank_id: (f.get('tank_id') || '').trim() || null
+    };
+    NUMBERS.forEach(function (k) {
+      var v = (f.get(k) || '').trim();
+      data[k] = v === '' ? null : Number(v);
+    });
+    return data;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    say('Saving...');
+    fetch(form.getAttribute('action'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildPayload())
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().catch(function () { return {}; }).then(function (body) {
+            throw new Error(body.error || ('Server returned ' + res.status));
+          });
+        }
+        form.reset(); setNow();
+        say('Test saved.', 'ok');
+      })
+      .catch(function (err) { say('Could not save: ' + err.message, 'err'); })
+      .then(function () { submitBtn.disabled = false; });
+  });
+</script>
+</body>
+</html>

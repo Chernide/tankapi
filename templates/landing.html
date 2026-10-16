@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tankbook: a simple log for your freshwater aquarium</title>
+<meta name="description" content="Track water parameters, maintenance and livestock for your freshwater tank, and see the trends.">
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover,nav a.link[aria-current]{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:64px}
+h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1.12;letter-spacing:-.02em;margin:32px 0 16px;max-width:15em}
+.lead{font-size:1.15rem;color:var(--mute);max-width:36em;margin:0 0 28px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:12px 22px;
+  border-radius:8px;text-decoration:none;font-weight:600}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);margin-left:8px}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+section{padding:56px 0}
+h2{font-size:1.6rem;letter-spacing:-.01em;margin:0 0 8px}
+.sub{color:var(--mute);margin:0 0 28px;max-width:38em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0;color:var(--mute);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.tags li{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.92rem}
+.steps{counter-reset:s;display:grid;gap:12px;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 16px 16px 60px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/" aria-current="page">Home</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>Know what your water is doing before your fish do.</h1>
+    <p class="lead">A simple, private log for your freshwater aquarium. Record your tests, keep up with maintenance, and spot trends early. It runs on a Raspberry Pi on your home network.</p>
+    <a class="btn" href="#how">See how it works</a>
+    <a class="btn ghost" href="#features">What it tracks</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="features">
+    <h2>Built for the way you actually test</h2>
+    <p class="sub">Two quick tests a week, a few taps on your phone, and a clear picture of how your tank is doing.</p>
+    <div class="grid">
+      <div class="card"><h3>Trend charts</h3><p>Step-style charts for ammonia, nitrite, nitrate, KH and pH that match how test kits really read.</p></div>
+      <div class="card"><h3>Maintenance reminders</h3><p>See at a glance when a test, water change or filter cleaning is due.</p></div>
+      <div class="card"><h3>Tank journal</h3><p>Log dosing, livestock additions and incidents so you can connect cause and effect.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it keeps track of</h2>
+    <p class="sub">Everything lives in one small database on your own hardware.</p>
+    <ul class="tags">
+      <li>Ammonia</li><li>Nitrite</li><li>Nitrate</li><li>KH</li><li>pH</li><li>Temperature</li>
+      <li>Water changes</li><li>Filter cleaning</li><li>Dosing</li><li>Livestock</li><li>Incidents</li>
+    </ul>
+  </section>
+
+  <section id="how">
+    <h2>How it works</h2>
+    <p class="sub">No account, no cloud, and no subscription.</p>
+    <ol class="steps">
+      <li><strong>Test your water.</strong> Use your usual liquid test and strips.</li>
+      <li><strong>Log it on your phone.</strong> Open the Tankbook page on your home network and enter the results.</li>
+      <li><strong>Read the dashboard.</strong> Charts, alerts and reminders update instantly.</li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Tankbook is a personal side project. Runs on a Raspberry Pi 4 with Python and Flask.</div>
+</footer>
+</body>
+</html>

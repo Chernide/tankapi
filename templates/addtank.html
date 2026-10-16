@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a tank: Tankbook</title>
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea; --field:#f6fafa; --err:#b3261e;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f; --field:#0f1f1f; --err:#ff8a80;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:32px}
+h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15;letter-spacing:-.02em;margin:24px 0 8px}
+.lead{color:var(--mute);margin:0}
+main{padding:28px 0 48px}
+fieldset{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px 20px;margin:0 0 18px}
+legend{font-weight:700;padding:0 8px;font-size:1.05rem}
+label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mute);gap:4px;margin-bottom:14px}
+label:last-child{margin-bottom:0}
+input,textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:100px}
+.hint{color:var(--mute);font-size:.88rem;margin:0}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+button,.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;
+  border-radius:8px;padding:12px 24px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.6;cursor:default}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.error{margin:0 0 16px;color:var(--err);font-weight:600}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/tanks">Tanks</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>Add a tank</h1>
+    <p class="lead">Give your tank a name so you can track its tests and maintenance separately.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/add-tank">
+    <fieldset>
+      <legend>Tank details</legend>
+      <label>Name
+        <input type="text" name="name" id="name" value="{{ name }}" required maxlength="60" placeholder="e.g. Living room 55g" autocomplete="off">
+      </label>
+      <label>Description <span class="hint">Optional</span>
+        <textarea name="description" id="description" maxlength="500" placeholder="Size, setup, livestock, or anything you want to remember">{{ description }}</textarea>
+      </label>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit">Add tank</button>
+      <a class="btn ghost" href="/tanks">Cancel</a>
+    </div>
+  </form>
+</main>
+
+<footer><div class="wrap">Tankbook &middot; a personal project for healthier fish tanks.</div></footer>
+</body>
+</html>

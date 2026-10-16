@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log an event: Tankbook</title>
+<style>
+:root{
+  --bg:#eef5f4; --panel:#ffffff; --ink:#12302f; --mute:#4f6b69; --line:#d3e2e0;
+  --accent:#0b6e6a; --accent-ink:#ffffff; --hero:#d9ecea; --field:#f6fafa; --err:#b3261e;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0d1a1a; --panel:#142626; --ink:#e3f0ee; --mute:#9bb6b3; --line:#244240;
+        --accent:#4fc1b8; --accent-ink:#06201f; --hero:#10302f; --field:#0f1f1f; --err:#ff8a80;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+nav .links{display:flex;gap:20px}
+nav a.link{color:var(--mute);text-decoration:none;font-size:.95rem}
+nav a.link:hover{color:var(--ink)}
+.hero{background:var(--hero);border-bottom:1px solid var(--line)}
+.hero .wrap{padding-top:8px;padding-bottom:32px}
+h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15;letter-spacing:-.02em;margin:24px 0 8px}
+.lead{color:var(--mute);margin:0}
+main{padding:28px 0 48px}
+fieldset{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px 20px;margin:0 0 18px}
+legend{font-weight:700;padding:0 8px;font-size:1.05rem}
+.hint{color:var(--mute);font-size:.88rem;margin:10px 0 0}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+label{display:flex;flex-direction:column;font-size:.9rem;color:var(--mute);gap:4px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:90px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+button,.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;
+  border-radius:8px;padding:12px 24px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.6;cursor:default}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{
+  outline:3px solid var(--accent);outline-offset:2px}
+#status{margin:14px 0 0;font-weight:600;min-height:1.5em}
+#status.ok{color:var(--accent)}
+#status.err{color:var(--err)}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mute);font-size:.9rem}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="/">Tankbook</a>
+      <div class="links">
+        <a class="link" href="/">Home</a>
+        <a class="link" href="/tanks">Tanks</a>
+        <a class="link" href="/about">About</a>
+      </div>
+    </nav>
+    <h1>Log an event</h1>
+    <p class="lead">Record maintenance, dosing, livestock changes or anything notable.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <form method="post" action="/log-event">
+
+    <fieldset>
+      <legend>Tank</legend>
+      <div class="row">
+        <label for="tank_id">Tank
+          <select name="tank_id" id="tank_id" required>
+            <option value="" selected disabled>Select a tank</option>
+            {% for tank in tanks %}
+            <option value="{{ tank['id'] }}">{{ tank['name'] }}</option>
+            {% else %}
+            <option value="" disabled>No tanks available</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <p class="hint">Use the same ID as on the test form.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>What happened</legend>
+      <div class="row">
+        <label>Event type
+          <select name="kind" id="kind" required>
+            <option value="water_change">Water change</option>
+            <option value="filter_clean">Filter cleaning</option>
+            <option value="dosing">Dosing</option>
+            <option value="livestock">Livestock added or removed</option>
+            <option value="incident">Incident</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Date and time
+          <input type="datetime-local" name="ts" id="ts" required>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Details</legend>
+      <label>Amount <span style="font-size:.8rem">(optional)</span>
+        <input type="text" name="amount" id="amount" maxlength="80" autocomplete="off">
+      </label>
+      <label style="margin-top:14px">Note <span style="font-size:.8rem">(optional)</span>
+        <textarea name="note" id="note" placeholder="Anything worth remembering"></textarea>
+      </label>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit">Save event</button>
+      <a class="btn ghost" href="/">Cancel</a>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+  </form>
+
+  <datalist id="tank-ids"></datalist>
+</main>
+
+<footer><div class="wrap">Tankbook &middot; a personal project for healthier fish tanks.</div></footer>
+
+<script>
+  var form = document.querySelector('form');
+  var statusEl = document.getElementById('status');
+  var submitBtn = form.querySelector('button[type="submit"]');
+  var kindEl = document.getElementById('kind');
+  var amountEl = document.getElementById('amount');
+  var tankInput = document.getElementById('tank_id');
+  var tankList = document.getElementById('tank-ids');
+
+  var PLACEHOLDERS = {
+    water_change: 'e.g. 25%',
+    filter_clean: 'e.g. rinsed sponge only',
+    dosing: 'e.g. 5 ml Prime',
+    livestock: 'e.g. added 6 neon tetras',
+    incident: 'e.g. fish found stressed',
+    other: ''
+  };
+  function updatePlaceholder() { amountEl.placeholder = PLACEHOLDERS[kindEl.value] || ''; }
+  kindEl.addEventListener('change', updatePlaceholder);
+  updatePlaceholder();
+
+  function setNow() {
+    var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    document.getElementById('ts').value = d.toISOString().slice(0, 16);
+  }
+  setNow();
+
+  function say(msg, cls) { statusEl.textContent = msg; statusEl.className = cls || ''; }
+
+  // Tank IDs are remembered on this device and shared with the test form.
+  function loadTanks() {
+    try { return JSON.parse(localStorage.getItem('tankbook_tanks') || '[]'); } catch (e) { return []; }
+  }
+  function saveTank(id) {
+    try {
+      var tanks = loadTanks().filter(function (t) { return t !== id; });
+      tanks.unshift(id);
+      localStorage.setItem('tankbook_tanks', JSON.stringify(tanks.slice(0, 20)));
+    } catch (e) { /* storage unavailable: skip */ }
+  }
+  function showTanks() {
+    var tanks = loadTanks();
+    tankList.innerHTML = '';
+    tanks.forEach(function (t) {
+      var o = document.createElement('option'); o.value = t; tankList.appendChild(o);
+    });
+    if (tanks.length && !tankInput.value) tankInput.value = tanks[0];
+  }
+  showTanks();
+
+  function buildPayload() {
+    var f = new FormData(form);
+    return {
+      tank_id: (f.get('tank_id') || '').trim(),
+      ts: f.get('ts'),
+      kind: f.get('kind'),
+      amount: (f.get('amount') || '').trim() || null,
+      note: (f.get('note') || '').trim() || null
+    };
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    say('Saving...');
+    fetch(form.getAttribute('action'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildPayload())
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().catch(function () { return {}; }).then(function (body) {
+            throw new Error(body.error || ('Server returned ' + res.status));
+          });
+        }
+        var used = tankInput.value.trim();
+        var label = kindEl.options[kindEl.selectedIndex].text.toLowerCase();
+        saveTank(used);
+        form.reset(); setNow(); showTanks(); updatePlaceholder();
+        say('Saved ' + label + ' for ' + used + '.', 'ok');
+      })
+      .catch(function (err) { say('Could not save: ' + err.message, 'err'); })
+      .then(function () { submitBtn.disabled = false; });
+  });
+</script>
+</body>
+</html>
